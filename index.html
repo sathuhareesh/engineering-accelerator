@@ -347,12 +347,18 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 16px;
-  transition: border-color 0.2s, opacity 0.2s;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
 }
+.pb-move:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+.pb-section.foundation .pb-move:hover { border-color: var(--p1); }
+.pb-section.y12-specific .pb-move:hover { border-color: var(--p2); }
+.pb-section.y34-specific .pb-move:hover { border-color: var(--p3); }
 .pb-move.done {
   border-color: var(--done);
   background: var(--done-light);
-  opacity: 0.7;
+  opacity: 0.75;
 }
 .pb-move-header {
   display: flex;
@@ -370,10 +376,9 @@ body {
 }
 .pb-move-title {
   font-family: var(--mono);
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--text);
-  cursor: pointer;
   line-height: 1.4;
 }
 .pb-move.done .pb-move-title {
@@ -385,17 +390,47 @@ body {
   font-size: 13px;
   color: var(--text-light);
   line-height: 1.55;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  flex: 1;
+}
+.pb-move-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
 }
 .pb-move-step {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--p2-dark);
-  background: var(--p2-light);
+  color: var(--text);
+  background: var(--ground);
+  border-left: 3px solid var(--border);
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: 0 4px 4px 0;
   line-height: 1.4;
+  flex: 1;
 }
+.pb-section.foundation .pb-move-step { border-left-color: var(--p1); }
+.pb-section.y12-specific .pb-move-step { border-left-color: var(--p2); }
+.pb-section.y34-specific .pb-move-step { border-left-color: var(--p3); }
+.pb-learn-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+  text-transform: uppercase;
+}
+.pb-learn-btn:hover { opacity: 0.8; }
+.pb-section.foundation .pb-learn-btn { background: var(--p1-light); color: var(--p1-dark); }
+.pb-section.y12-specific .pb-learn-btn { background: var(--p2-light); color: var(--p2-dark); }
+.pb-section.y34-specific .pb-learn-btn { background: var(--p3-light); color: var(--p3-dark); }
 .pb-section.foundation .pb-section-title { color: var(--p1); }
 .pb-section.foundation .pb-section-header { border-bottom-color: var(--p1-light); }
 .pb-section.y12-specific .pb-section-title { color: var(--p2-dark); }
@@ -1174,6 +1209,21 @@ body {
   </div>
 </div>
 
+<!-- PLAYBOOK MODAL -->
+<div class="overlay" id="pbOverlay" onclick="closePbModal(event)">
+  <div class="modal" id="pbModal">
+    <div class="mhead">
+      <button class="mclose" onclick="closePbModalDirect()" aria-label="Close">✕</button>
+      <div class="m-daynum" id="pbMoveNum"></div>
+      <h2 class="m-title" id="pbMoveTitle"></h2>
+      <div class="m-meta">
+        <span class="badge" id="pbMoveBadge"></span>
+      </div>
+    </div>
+    <div class="mbody" id="pbMoveBody"></div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
 //  COURSE DATA — 45 Days
@@ -1748,42 +1798,288 @@ task:`Three things to do today: (1) Share this link with one classmate who would
 //  PLAYBOOK DATA
 // ═══════════════════════════════════════════════
 const PLAYBOOK_FOUNDATION = [
-  { id:'f1', title:'Read beyond your textbooks',
+  { id:'f1', title:'Read beyond your textbooks', badge:'15 min',
     why:'Every semester, read at least one book outside your syllabus. The best engineers read widely — thinking well is a transferable skill that never ages.',
-    step:'Pick one book from the Resources section of this site and start it this week.' },
-  { id:'f2', title:'Build the consistency habit',
+    step:'Pick one book from the Resources section of this site and start it this week.',
+    content:`<div class="mentor-note">"The engineer who only reads textbooks will always work for the engineer who also reads history, psychology, and philosophy. Not because those subjects are useful — but because wide reading builds the capacity to think in new ways."</div>
+<h3>Why this matters</h3>
+<p>Engineering teaches you <em>how</em> to solve problems. Reading widely teaches you <em>which</em> problems are worth solving — and how human beings actually behave, think, and decide. Those are the skills that separate engineers who build things people use from engineers who build things no one cares about.</p>
+<h3>What to read</h3>
+<p>Don't overthink the category. Pick anything that isn't a textbook:</p>
+<ul>
+<li><strong>Biographies</strong> — How did someone you admire actually think and live? (Steve Jobs, APJ Abdul Kalam, Elon Musk, Narayan Murthy)</li>
+<li><strong>Business &amp; startups</strong> — Zero to One, The Lean Startup, Shoe Dog</li>
+<li><strong>Psychology &amp; thinking</strong> — Thinking Fast and Slow, Atomic Habits, Deep Work</li>
+<li><strong>History &amp; culture</strong> — Sapiens, The Argumentative Indian</li>
+<li><strong>Fiction</strong> — A good novel builds empathy and imagination faster than anything</li>
+</ul>
+<h3>How to actually finish a book</h3>
+<ul>
+<li>Read 20 pages before bed — not a chapter goal, just 20 pages</li>
+<li>Keep the book in one fixed spot (on your desk, not in your bag)</li>
+<li>Write one sentence per chapter in your notebook: "The main thing I got from this was..."</li>
+<li>Don't feel guilty about abandoning a bad book — life is too short</li>
+</ul>
+<div class="tip"><strong>Start here:</strong> Check the Books section in Resources on this site — there are curated picks specifically for engineering students.</div>` },
+
+  { id:'f2', title:'Build the consistency habit', badge:'20 min',
     why:'30 minutes every day beats a 5-hour marathon once a week. Compound growth is real — 1% better daily means 37x better over a year. The habit matters more than any single session.',
-    step:'Block 30 mins in your schedule tomorrow. Guard that slot like a class you cannot skip.' },
-  { id:'f3', title:'Keep a notebook',
+    step:'Block 30 mins in your schedule tomorrow. Guard that slot like a class you cannot skip.',
+    content:`<div class="mentor-note">"The students who transform during engineering are not the ones who study hardest during exams. They are the ones who do something small, every single day, even when nothing is due."</div>
+<h3>The maths of compounding</h3>
+<p>If you get 1% better every day for a year, you end up 37 times better. If you get 1% worse every day, you end up near zero. This is not motivational fiction — it is arithmetic. The question is whether you believe it applies to you.</p>
+<p>Most students don't believe it applies to them because they can't see the compounding happening. It is invisible for months. Then suddenly it is not.</p>
+<h3>How to build the habit</h3>
+<ul>
+<li><strong>Anchor it to something fixed</strong> — right after dinner, right after your morning chai. Not "when I feel like it."</li>
+<li><strong>Start embarrassingly small</strong> — 20 minutes is better than 0. A habit you keep at 20 min beats a goal you abandon at 60 min.</li>
+<li><strong>Remove the decision</strong> — Decide tonight what you will do tomorrow. Don't wake up and figure it out.</li>
+<li><strong>Track the streak</strong> — A simple X on a calendar works. Don't break the chain.</li>
+</ul>
+<h3>What to do in those 30 minutes</h3>
+<p>Pick one thing and rotate across the week — reading, coding, writing, learning a tool. The content matters less than the habit. Once the habit exists, the content compounds.</p>
+<div class="tip"><strong>Remember:</strong> A loss hurts more than a gain helps. Missing 3 days requires extra effort just to get back to where you were. Protect the streak.</div>` },
+
+  { id:'f3', title:'Keep a notebook', badge:'10 min',
     why:'Writing forces clarity. You will have insights, frustrations, and ideas during college that you will forget by next semester. Capture them — handwritten or digital.',
-    step:'Buy one notebook. Write today\'s date and one sentence about what you want from your engineering years.' },
-  { id:'f4', title:'Explore what genuinely pulls you',
+    step:'Buy one notebook. Write today\'s date and one sentence about what you want from your engineering years.',
+    content:`<div class="mentor-note">"I wish I had written more down. The ideas I had at 19 that I thought I would remember — I don't remember them. The ones I wrote down shaped decisions I made at 25."</div>
+<h3>Why writing works</h3>
+<p>You cannot think clearly inside your head. The head is too noisy, too fast, too prone to going in circles. Writing slows things down. It forces you to finish a sentence — and finishing a sentence forces you to actually know what you think.</p>
+<h3>What to write</h3>
+<ul>
+<li><strong>After a good conversation</strong> — What did you learn? What do you want to think about more?</li>
+<li><strong>After a bad day</strong> — What actually happened? What would you do differently?</li>
+<li><strong>When you're confused about a decision</strong> — Write the options. Write what you're afraid of. The answer often appears.</li>
+<li><strong>One sentence per day</strong> — What was the most interesting thing today? Even one line is enough.</li>
+</ul>
+<h3>Handwritten vs digital</h3>
+<p>Both work. Handwritten is slower, which forces you to think more carefully. Digital (Notion, Apple Notes, a simple .txt file) is easier to search later. Pick what you will actually use.</p>
+<div class="tip"><strong>One rule:</strong> Never show your notebook to anyone unless you want to. The notebook is for you. Write honestly.</div>` },
+
+  { id:'f4', title:'Explore what genuinely pulls you', badge:'20 min',
     why:'Most students drift into a career because they never paused to ask what they actually enjoy. Curiosity is a signal, not noise. Follow it without judging whether it is "useful."',
-    step:'List 3 things you enjoy doing — inside or outside engineering. No filter.' },
-  { id:'f5', title:'Break free from the placement trap',
+    step:'List 3 things you enjoy doing — inside or outside engineering. No filter.',
+    content:`<div class="mentor-note">"In my first year, I thought I had to be passionate about algorithms to be a good engineer. I wasn't. I was passionate about building things people could actually use. That distinction — between the subject and the application — took me years to understand."</div>
+<h3>The passion trap</h3>
+<p>Everyone tells you to "follow your passion" but nobody tells you how to find it. Here is the honest truth: passion is usually discovered through doing, not thinking. You don't find it by reflecting — you find it by trying things and paying attention to what makes you lose track of time.</p>
+<h3>How to explore</h3>
+<ul>
+<li><strong>Notice what you read voluntarily</strong> — What do you search for when nobody is asking you to? That is a signal.</li>
+<li><strong>Notice what frustrates you</strong> — Problems you keep noticing and wishing someone would fix are often pointing at something you care about.</li>
+<li><strong>Try things with low stakes</strong> — Attend a hackathon, join a debate club, volunteer for a startup, take a free online course in something completely different.</li>
+<li><strong>Talk to people in different roles</strong> — A product manager, a researcher, a startup founder, a civil servant. Ask them what their days actually look like.</li>
+</ul>
+<h3>What to look for</h3>
+<p>You are looking for work that makes you feel engaged rather than drained. Not every day — even the best work has boring days. But the overall direction. Are you energised or depleted after a week of this?</p>
+<div class="tip"><strong>Don't rush this.</strong> Year 1 and 2 are for exploring. By Year 3 you should be narrowing. But you can only narrow after you have explored.</div>` },
+
+  { id:'f5', title:'Break free from the placement trap', badge:'20 min',
     why:'Placement is a milestone, not a destination. Students who optimize only for a job often plateau at 25. Your 4 years are a platform — use them to build something lasting.',
-    step:'Write one sentence: "At 30, I want to be the kind of person who..." and keep it somewhere visible.' },
-  { id:'f6', title:'Learn AI tools — they are your co-workers now',
+    step:'Write one sentence: "At 30, I want to be the kind of person who..." and keep it somewhere visible.',
+    content:`<div class="mentor-note">"Placement season is when the most intelligent people I knew started doing the most short-sighted things — memorising interview patterns, grinding LeetCode at 2am, changing what they wanted based on what the company wanted. Some got the offers. Five years later, many of them are unhappy."</div>
+<h3>What the placement trap looks like</h3>
+<p>The placement trap is not about getting a job. Getting a job is fine. The trap is when <strong>getting a job becomes the only goal of your entire engineering education</strong> — when every choice you make (what to study, what clubs to join, how to spend your time) is filtered through "will this help my placement?"</p>
+<p>The trap produces engineers who are optimised for interviews and underequipped for everything after.</p>
+<h3>The alternative</h3>
+<p>Build skills that make you genuinely useful — to a company, to a client, to your own startup. These overlap with interview skills but go much further:</p>
+<ul>
+<li>The ability to learn something new in a week when the job demands it</li>
+<li>The ability to communicate clearly what you built and why</li>
+<li>The ability to work without constant guidance</li>
+<li>A portfolio of real things you have made</li>
+</ul>
+<h3>A different question</h3>
+<p>Instead of asking "Which company should I aim for?", ask "What kind of engineer do I want to be at 28?" Then ask what you need to build, learn, and experience to become that. The job will follow from that — and it will be a better job than the one you would have gotten from optimising for placement alone.</p>
+<div class="tip"><strong>Placement is a floor, not a ceiling.</strong> Get placed if that's your path. But don't let it be your ceiling.</div>` },
+
+  { id:'f6', title:'Learn AI tools — they are your co-workers now', badge:'30 min',
     why:'ChatGPT, Claude, Cursor, Gemini — not optional anymore. The engineer who uses AI well will do the work of five. The one who ignores it will be replaced by one who doesn\'t.',
-    step:'Spend 30 mins solving any real problem you have right now using an AI tool. Not a tutorial — a real problem.' },
-  { id:'f7', title:'Communicate clearly — written and spoken',
+    step:'Spend 30 mins solving any real problem you have right now using an AI tool. Not a tutorial — a real problem.',
+    content:`<div class="mentor-note">"The students who will dominate the next decade are not the ones who know more than AI — they are the ones who know how to direct AI. The skill is no longer knowing things. It is knowing what to ask, how to verify, and how to build on top of what AI gives you."</div>
+<h3>The tools you need to know</h3>
+<ul>
+<li><strong>ChatGPT / Claude</strong> — General thinking, writing, explaining concepts, summarising, brainstorming. Use these daily.</li>
+<li><strong>GitHub Copilot / Cursor</strong> — AI code editor. Writes code as you type. Dramatically speeds up coding once you know the basics.</li>
+<li><strong>Gemini</strong> — Google's AI, good for research and connected to search. Useful for finding current information.</li>
+<li><strong>Perplexity</strong> — AI-powered search. Better than Google for research questions.</li>
+</ul>
+<h3>Prompt engineering — the basics</h3>
+<p>Prompt engineering is the skill of talking to AI well. A bad prompt gives you a generic answer. A good prompt gives you something genuinely useful.</p>
+<p><strong>The formula for a good prompt:</strong></p>
+<ul>
+<li><strong>Role</strong> — Tell the AI who it is. "You are a senior software engineer reviewing my code."</li>
+<li><strong>Context</strong> — Give it the relevant background. "I am a 2nd year CSE student building a to-do app in Python."</li>
+<li><strong>Task</strong> — Be specific about what you want. "Explain why this function is slow and how to fix it."</li>
+<li><strong>Format</strong> — Tell it how to respond. "Give me the answer in bullet points. Keep it under 200 words."</li>
+</ul>
+<p><strong>Bad prompt:</strong> "Explain recursion"<br>
+<strong>Good prompt:</strong> "I am a first-year CSE student who understands loops but not recursion. Explain recursion using a real-world example I would encounter as an Indian college student. Then show me the simplest possible Python function using recursion."</p>
+<h3>Practical uses right now</h3>
+<ul>
+<li>Understand a textbook concept that your professor explained poorly</li>
+<li>Debug code that is not working ("Here is my code. Here is the error. What is wrong?")</li>
+<li>Summarise a research paper or long article</li>
+<li>Prepare for a presentation ("I am presenting X to Y audience. What are the 5 most important points?")</li>
+<li>Draft a cold email to a senior or potential employer</li>
+<li>Learn a new tool ("I have never used Git. Explain it to me like I am a complete beginner, then give me the 5 commands I need to know.")</li>
+</ul>
+<h3>One important warning</h3>
+<p>AI makes mistakes. It sounds confident even when it is wrong. Always verify facts, formulas, and code that matters. Use AI as a fast first draft, not as ground truth.</p>
+<div class="tip"><strong>Start today:</strong> Open ChatGPT or Claude. Type one real problem you are stuck on right now. See what happens. The first time you get a genuinely useful answer, you will understand why this is not optional.</div>` },
+
+  { id:'f7', title:'Communicate clearly — written and spoken', badge:'20 min',
     why:'The best idea explained poorly loses to a mediocre idea explained well. In college, grades measure what you know. In the real world, communication determines how far you go.',
-    step:'Write one short paragraph about something you learned this week. Read it back — does it make sense to a stranger?' },
-  { id:'f8', title:'Find one person ahead of you to learn from',
+    step:'Write one short paragraph about something you learned this week. Read it back — does it make sense to a stranger?',
+    content:`<div class="mentor-note">"I have seen brilliant engineers get passed over for promotions because they could not explain their work. I have seen average engineers get outsized opportunities because they could. Communication is not a soft skill. It is the skill that makes all your other skills visible."</div>
+<h3>Why engineers underinvest in this</h3>
+<p>Engineering education rewards correctness, not clarity. You get marks for the right answer, not for how well you explained it. So most engineers spend four years getting better at knowing things and zero years getting better at communicating them.</p>
+<p>Then they enter the real world, where communication is constantly evaluated — in meetings, in emails, in code reviews, in job interviews, in client calls.</p>
+<h3>Written communication</h3>
+<ul>
+<li><strong>Write short.</strong> If you can say it in 3 sentences, don't write 10.</li>
+<li><strong>Lead with the conclusion.</strong> Don't make the reader wade through your reasoning before getting to the point. State the point first, then explain.</li>
+<li><strong>Use simple words.</strong> "Use" is better than "utilise." "Start" is better than "initiate."</li>
+<li><strong>Read it back.</strong> Before sending any important email or message, read it as if you are the receiver. Does it make sense? Is anything unclear?</li>
+</ul>
+<h3>Spoken communication</h3>
+<ul>
+<li><strong>Slow down.</strong> Most people speak too fast when nervous. Slow is confident.</li>
+<li><strong>Structure before you speak.</strong> "I want to make three points. First..." immediately makes you sound clear-headed.</li>
+<li><strong>Practice in low-stakes situations.</strong> Explain something you learned to a friend who knows nothing about it. If they understand, you've communicated well.</li>
+</ul>
+<h3>How to build this skill in college</h3>
+<ul>
+<li>Join a debate club or toastmasters-style group</li>
+<li>Write on LinkedIn or Medium — even one post teaches you more than 10 communication books</li>
+<li>Volunteer to present in seminars and group projects</li>
+<li>Start a study group where you explain concepts to each other</li>
+</ul>
+<div class="tip"><strong>The simplest practice:</strong> Every day, explain one thing you learned to someone who doesn't know it. Out loud. Even to yourself in a mirror. This is how teachers get so good at thinking clearly.</div>` },
+
+  { id:'f8', title:'Find one person ahead of you to learn from', badge:'15 min',
     why:'A good mentor compresses years of trial-and-error into months. This does not have to be formal — a senior, an alumnus, or someone whose work you follow online all count.',
-    step:'Identify one person you genuinely respect who is 2+ years ahead of you. Send them one honest message this week.' },
-  { id:'f9', title:'Understand money basics before you earn any',
+    step:'Identify one person you genuinely respect who is 2+ years ahead of you. Send them one honest message this week.',
+    content:`<div class="mentor-note">"The single best investment I made during engineering was finding one senior who had done something I wanted to do, and asking them to talk to me. They said yes. That one conversation changed three decisions I was about to make badly."</div>
+<h3>What a mentor actually does</h3>
+<p>A mentor is not someone who teaches you a syllabus. A mentor is someone who has already walked a path you're considering and can tell you honestly: what worked, what didn't, what they wish they had known, and what traps to avoid.</p>
+<p>That is worth more than any course because it is specific, honest, and earned through real experience.</p>
+<h3>Where to find them</h3>
+<ul>
+<li><strong>Year 3 and 4 students in your college</strong> — Most accessible, most relevant. They were exactly where you are 2 years ago.</li>
+<li><strong>Alumni from your college</strong> — LinkedIn is full of alumni who are genuinely happy to talk to juniors. Most people like being asked for their advice.</li>
+<li><strong>Founders, researchers, or professionals on LinkedIn/Twitter</strong> — Follow people whose work you admire. Engage with their posts genuinely. Sometimes a conversation starts.</li>
+<li><strong>Professors doing research you find interesting</strong> — Ask if you can help with their research. This is underused and extremely valuable.</li>
+</ul>
+<h3>How to approach someone</h3>
+<p>The biggest mistake: asking for too much in the first message. Don't ask for a "mentorship relationship." Ask for 20 minutes.</p>
+<p><strong>Template that works:</strong><br>
+"Hi [Name], I am a [Year] [Branch] student at [College]. I came across your work on [specific thing] and found it genuinely interesting. I would love to ask you a few questions about [specific topic] — would you have 20 minutes for a quick call sometime? No pressure if not."</p>
+<p>Specific, respectful of their time, easy to say yes to.</p>
+<h3>What to ask when you get the meeting</h3>
+<ul>
+<li>What do you wish you had known in [your current year]?</li>
+<li>What was the most important decision you made during engineering?</li>
+<li>What would you do differently?</li>
+<li>Is there anyone else you think I should talk to?</li>
+</ul>
+<div class="tip"><strong>After the meeting:</strong> Send a thank-you message within 24 hours. Mention one specific thing they said that you found useful. This is rare and memorable.</div>` },
+
+  { id:'f9', title:'Understand money basics before you earn any', badge:'20 min',
     why:'No one teaches this in college: compound interest, savings, salary negotiation, the difference between an asset and a liability. Learn it before you need it.',
-    step:'Search "personal finance for beginners India" and watch one 10-minute video today.' },
-  { id:'f10', title:'Build something — however small',
+    step:'Search "personal finance for beginners India" and watch one 10-minute video today.',
+    content:`<div class="mentor-note">"I got my first salary and had no idea what to do with it. Nobody had ever taught me about taxes, savings, or why putting ₹5000 aside at 22 is worth more than ₹50,000 at 35. Don't be me. Learn this now."</div>
+<h3>Why college skips this</h3>
+<p>Indian engineering education teaches you how to build things, not how to manage the money those things earn you. Most students receive their first salary and spend it without a system, save nothing in their 20s, and realise the mistake in their 30s when compounding could have been working for a decade.</p>
+<h3>The most important concepts</h3>
+<ul>
+<li><strong>Compound interest works for you and against you.</strong> Money invested early grows exponentially. Debt taken carelessly grows the same way. ₹10,000 invested at 22 at 12% return becomes ₹3 lakhs by 45. The same ₹10,000 invested at 35 becomes ₹60,000. Time is the variable.</li>
+<li><strong>Asset vs liability.</strong> An asset puts money in your pocket. A liability takes money out. Your skills are assets. An EMI is a liability. Understand which side every financial decision is on.</li>
+<li><strong>Salary is not the same as wealth.</strong> A high salary spent fully is worth less than a modest salary invested consistently. Wealth is what you keep, not what you earn.</li>
+<li><strong>Emergency fund first.</strong> Before investing in anything, build a 3-month expense buffer. This is non-negotiable.</li>
+</ul>
+<h3>What to learn before your first job</h3>
+<ul>
+<li>How Indian income tax works (slabs, deductions like 80C)</li>
+<li>What EPF/NPS is and why you should not opt out</li>
+<li>The difference between a savings account and a mutual fund</li>
+<li>How to negotiate a salary offer (most people never do this)</li>
+</ul>
+<h3>Where to learn</h3>
+<ul>
+<li>YouTube: Akshat Shrivastava, Pranjal Kamra (Groww), Ankur Warikoo</li>
+<li>Book: <em>Let's Talk Money</em> by Monika Halan — written specifically for India</li>
+</ul>
+<div class="tip"><strong>One action now:</strong> Open any UPI app and set up a recurring transfer of ₹500/month to a savings account. You will not miss ₹500. In 4 years, you will have ₹24,000 plus interest — and, more importantly, the habit of saving before spending.</div>` },
+
+  { id:'f10', title:'Build something — however small', badge:'25 min',
     why:'Building beats studying theory every time. Even a small project teaches more than 10 tutorials. The act of finishing something is its own skill.',
-    step:'Pick one micro-project idea (it can be embarrassingly small) and spend 30 mins starting it today.' },
-  { id:'f11', title:'Protect your mental health',
+    step:'Pick one micro-project idea (it can be embarrassingly small) and spend 30 mins starting it today.',
+    content:`<div class="mentor-note">"The most common mistake I see: students spend all four years preparing to build and never actually build. Tutorials feel like progress. They are not. The moment you try to build something real is the moment you actually start learning."</div>
+<h3>Why building is different from studying</h3>
+<p>When you study, you consume knowledge. When you build, you create under constraints — and those constraints expose every gap in your understanding. Every error message, every unexpected behaviour, every "this doesn't work and I don't know why" is a lesson that a tutorial can never give you.</p>
+<p>Also: a finished project is evidence. A list of courses you completed is not.</p>
+<h3>Project ideas by interest area</h3>
+<ul>
+<li><strong>Web / App</strong> — A personal portfolio site, a local college event app, a simple expense tracker</li>
+<li><strong>Data / AI</strong> — Analyse your college's placement data, build a chatbot for your hostel menu, classify spam in your inbox</li>
+<li><strong>Automation</strong> — A script that reminds you to drink water, a bot that tracks cricket scores, a tool that compresses your lecture PDFs</li>
+<li><strong>Hardware (ECE/EEE)</strong> — An IoT sensor for your room, an automatic plant watering system, a simple Arduino project</li>
+<li><strong>Non-technical</strong> — A newsletter about something you care about, a YouTube video explaining a concept, a blog post series</li>
+</ul>
+<h3>How to actually finish something</h3>
+<ul>
+<li><strong>Start smaller than you think.</strong> The version 1 should be embarrassingly basic. Get it working first. Improve later.</li>
+<li><strong>Set a one-week deadline.</strong> Open-ended projects never finish. Give yourself 7 days to have something working.</li>
+<li><strong>Show it to someone.</strong> Sharing creates accountability. Even showing one friend forces you to make it presentable.</li>
+<li><strong>Put it on GitHub.</strong> Even a small project on GitHub is portfolio evidence. Even if no one looks at it yet.</li>
+</ul>
+<div class="tip"><strong>The rule:</strong> A working, ugly thing is worth infinitely more than a perfect thing that doesn't exist yet. Ship the ugly thing. Then improve it.</div>` },
+
+  { id:'f11', title:'Protect your mental health', badge:'15 min',
     why:'Engineering college is genuinely hard. The comparison, the pressure, the loneliness — these are real. Asking for help is not weakness. It is the most practical thing a smart person can do.',
-    step:'Talk to one friend about something non-academic this week. Just check in.' },
-  { id:'f12', title:'Know the difference between busy and productive',
+    step:'Talk to one friend about something non-academic this week. Just check in.',
+    content:`<div class="mentor-note">"The culture in most engineering colleges silently teaches you that struggling is shameful. Everyone looks like they are doing fine. Nobody talks about how hard it actually is. That silence is dangerous — it makes each person think they are the only one struggling."</div>
+<h3>What you will likely face</h3>
+<ul>
+<li><strong>Comparison.</strong> Someone always seems smarter, more sorted, more confident. This is not reality — it is performance. Everyone is figuring things out.</li>
+<li><strong>Purpose loss.</strong> "Why am I studying this? What is the point of any of this?" This feeling is not a sign of failure. It is a sign that you are thinking.</li>
+<li><strong>Loneliness.</strong> Especially in the first semester, or after a friendship breaks down, or during placement season when everyone seems to be on different paths.</li>
+<li><strong>Pressure without support.</strong> From family expectations, from rank pressure, from the feeling that four years are moving faster than you can keep up with.</li>
+</ul>
+<h3>What actually helps</h3>
+<ul>
+<li><strong>Talk to someone.</strong> A friend, a parent, a college counsellor. Not necessarily to solve anything — just to not carry it alone.</li>
+<li><strong>Physical movement.</strong> Walk, run, play a sport. The body and mind are not separate systems. Moving helps.</li>
+<li><strong>Sleep.</strong> A consistent sleep schedule does more for your thinking and mood than almost any intervention. Guard it.</li>
+<li><strong>Limit comparison inputs.</strong> Instagram and LinkedIn are highlight reels. Nobody posts their confused, struggling, uncertain days.</li>
+<li><strong>One thing outside engineering.</strong> A hobby, a sport, a creative practice. Something that is entirely yours.</li>
+</ul>
+<h3>When to get professional help</h3>
+<p>If you are consistently unable to sleep, losing interest in things you used to enjoy, feeling hopeless, or having thoughts of harming yourself — please talk to your college counsellor or a mental health professional. This is a medical situation, not a character flaw.</p>
+<div class="tip"><strong>iCall (India):</strong> 9152987821 — free counselling from TISS. Vandrevala Foundation: 1860-2662-345, available 24/7. You do not need to be in crisis to call.</div>` },
+
+  { id:'f12', title:'Know the difference between busy and productive', badge:'15 min',
     why:'College rewards busyness. The real world rewards results. Learn early to ask: "What did I actually produce this week?" — not "How many hours did I spend working?"',
-    step:'At the end of this week, list 3 things you actually finished — not just worked on.' }
+    step:'At the end of this week, list 3 things you actually finished — not just worked on.',
+    content:`<div class="mentor-note">"I used to sit at my desk for 10 hours during exams and feel exhausted by evening. I was busy for 10 hours. I was productive for maybe 3. The rest was the feeling of studying — opening books, switching tabs, worrying — without the actual output of studying."</div>
+<h3>The difference</h3>
+<p><strong>Busy</strong> is measured in time spent. <strong>Productive</strong> is measured in output created. A student who spends 8 hours on their laptop and produces a working function is more productive than one who spends 12 hours and produces nothing finished.</p>
+<p>College accidentally teaches you to value busyness. "I studied all night" is treated as effort. But results matter more than effort — and learning to produce results efficiently is the skill the real world actually pays for.</p>
+<h3>What kills productivity in college</h3>
+<ul>
+<li><strong>Studying without a goal.</strong> "Study for 3 hours" is a time goal. "Finish the first 3 problems in Chapter 4" is a result goal. Result goals are better.</li>
+<li><strong>The open laptop.</strong> Notifications, YouTube, WhatsApp — the open laptop is the single biggest destroyer of deep work for engineering students.</li>
+<li><strong>Multitasking.</strong> There is no such thing. There is only switching between tasks rapidly, each time paying a re-entry cost. Single-task instead.</li>
+<li><strong>Mistaking planning for doing.</strong> Making to-do lists, setting up Notion templates, colour-coding your schedule — all feel productive. None of them produce output.</li>
+</ul>
+<h3>A simple weekly system</h3>
+<ul>
+<li><strong>Sunday evening:</strong> List 3 things that must be finished this week (not started — finished).</li>
+<li><strong>Each morning:</strong> Identify the one most important thing to finish today. Do that first.</li>
+<li><strong>Friday evening:</strong> Review. Did those 3 things get done? If not, why not?</li>
+</ul>
+<div class="tip"><strong>The question that changes everything:</strong> "If I could only do one thing today and nothing else, what would make this week feel successful?" Do that thing first. Everything else is secondary.</div>` }
 ];
 
 const PLAYBOOK_Y12 = [
@@ -1877,15 +2173,40 @@ function renderPbProgress(trackId) {
 function renderMoveCard(trackId, move) {
   const done = pbIsDone(trackId, move.id);
   const cbId = 'pbc-' + trackId + '-' + move.id;
-  return `<div class="pb-move${done ? ' done' : ''}" id="pbm-${trackId}-${move.id}">
+  const hasLesson = !!move.content;
+  return `<div class="pb-move${done ? ' done' : ''}${hasLesson ? ' has-lesson' : ''}" id="pbm-${trackId}-${move.id}">
     <div class="pb-move-header">
       <input type="checkbox" class="pb-check" id="${cbId}" ${done ? 'checked' : ''}
         onchange="pbToggle('${trackId}','${move.id}',this)">
       <label for="${cbId}" class="pb-move-title">${move.title}</label>
     </div>
     <div class="pb-move-why">${move.why}</div>
-    <div class="pb-move-step">→ ${move.step}</div>
+    <div class="pb-move-footer">
+      <div class="pb-move-step">→ ${move.step}</div>
+      ${hasLesson ? `<button class="pb-learn-btn" onclick="openPbMove('${trackId}','${move.id}')">Learn more →</button>` : ''}
+    </div>
   </div>`;
+}
+
+function openPbMove(trackId, moveId) {
+  const allMoves = PLAYBOOK_FOUNDATION.concat(PLAYBOOK_Y12).concat(PLAYBOOK_Y34);
+  const move = allMoves.find(m => m.id === moveId);
+  if (!move || !move.content) return;
+  const sectionLabel = moveId.startsWith('f') ? 'Foundation' : (moveId.startsWith('y12') ? 'Year 1–2' : 'Year 3–4');
+  document.getElementById('pbMoveNum').textContent = sectionLabel;
+  document.getElementById('pbMoveTitle').textContent = move.title;
+  document.getElementById('pbMoveBadge').textContent = move.badge || '30 min read';
+  document.getElementById('pbMoveBody').innerHTML = move.content;
+  document.getElementById('pbOverlay').classList.add('open');
+  document.getElementById('pbModal').scrollTop = 0;
+}
+
+function closePbModalDirect() {
+  document.getElementById('pbOverlay').classList.remove('open');
+}
+
+function closePbModal(e) {
+  if (e.target === document.getElementById('pbOverlay')) closePbModalDirect();
 }
 
 function renderPlaybook(trackId) {
