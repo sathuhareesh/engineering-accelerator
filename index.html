@@ -226,20 +226,44 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* ── AUDIENCE BAND ─────────────────────────────── */
-.audience-band {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+/* ── TRACK SELECTOR ─────────────────────────────── */
+.track-selector {
   max-width: 940px;
-  margin: -10px auto 20px;
+  margin: 0 auto 32px;
   padding: 0 28px;
 }
-.aud-label { font-family: var(--mono); font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; }
-.aud-badge { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 20px; background: var(--surface); border: 1.5px solid var(--border); color: var(--text-light); letter-spacing: 0.04em; }
-.active-badge { border-color: var(--p1); color: var(--p1); background: var(--p1-light); }
-.aud-more { font-size: 11px; color: var(--text-light); margin-left: 4px; }
+.track-selector-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.track-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.track-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
+}
+.track-tab:hover { border-color: var(--p1); color: var(--p1); }
+.track-tab.active { background: var(--p1-light); border-color: var(--p1); color: var(--p1); font-weight: bold; }
+.track-tab.tab-y12.active { background: var(--p2-light); border-color: var(--p2); color: var(--p2-dark); }
+.track-tab.tab-y34.active { background: var(--p3-light); border-color: var(--p3); color: var(--p3-dark); }
+
+.track-content { display: none; }
+.track-content.active { display: block; }
 
 /* ── NOTES CTA ──────────────────────────────────── */
 .notes-cta {
@@ -835,14 +859,18 @@ body {
   </div>
 </section>
 
-<!-- AUDIENCE BAND -->
-<div class="audience-band">
-  <span class="aud-label">This course is for:</span>
-  <span class="aud-badge active-badge">Engineering Freshers</span>
-  <span class="aud-badge">Year 1 – 2</span>
-  <span class="aud-badge">Year 3 – 4</span>
-  <span class="aud-more">v2 (During Engineering) &amp; v3 (Post-Engineering) coming soon →</span>
+<!-- TRACK SELECTOR -->
+<div class="track-selector">
+  <div class="track-selector-label">Choose your track →</div>
+  <div class="track-tabs">
+    <button class="track-tab active" onclick="switchTrack('fresher', this)">Fresher — 45-Day Course</button>
+    <button class="track-tab tab-y12" onclick="switchTrack('y12', this)">Year 1 – 2 Playbook</button>
+    <button class="track-tab tab-y34" onclick="switchTrack('y34', this)">Year 3 – 4 Playbook</button>
+  </div>
 </div>
+
+<!-- FRESHER TRACK -->
+<div id="track-fresher" class="track-content active">
 
 <!-- NOTES CTA -->
 <div class="notes-cta">
@@ -885,6 +913,22 @@ body {
 
 <!-- DAYS -->
 <div class="days-wrap" id="daysWrap"></div>
+
+</div><!-- /track-fresher -->
+
+<!-- YEAR 1-2 TRACK -->
+<div id="track-y12" class="track-content">
+  <div style="max-width:780px;margin:60px auto;padding:0 28px;text-align:center;">
+    <p style="font-family:var(--mono);font-size:13px;color:var(--text-light);">Year 1–2 Playbook — coming soon.</p>
+  </div>
+</div>
+
+<!-- YEAR 3-4 TRACK -->
+<div id="track-y34" class="track-content">
+  <div style="max-width:780px;margin:60px auto;padding:0 28px;text-align:center;">
+    <p style="font-family:var(--mono);font-size:13px;color:var(--text-light);">Year 3–4 Playbook — coming soon.</p>
+  </div>
+</div>
 
 <!-- RESOURCES SECTION -->
 <div class="resources-section" id="resourcesSection">
@@ -1624,6 +1668,13 @@ const PHASE_META = {
   2: { title: 'Tools of the Modern World', sub: 'AI, Python, and digital literacy', cls: 'p2', active: 'active-p2' },
   3: { title: 'Design Your Future', sub: 'Direction, purpose, and your 4-year plan', cls: 'p3', active: 'active-p3' }
 };
+
+function switchTrack(track, btn) {
+  document.querySelectorAll('.track-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.track-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('track-' + track).classList.add('active');
+  btn.classList.add('active');
+}
 
 function renderProgress() {
   const done = countDone();
