@@ -707,7 +707,7 @@ body {
   bottom: 28px; right: 28px;
   background: var(--p1);
   color: white;
-  border: none;
+  text-decoration: none;
   border-radius: 24px;
   padding: 12px 20px;
   font-size: 13px;
@@ -717,28 +717,10 @@ body {
   z-index: 150;
   transition: transform 0.15s, box-shadow 0.15s;
   font-family: var(--sans);
+  display: inline-block;
 }
 .feedback-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(107,92,231,0.45); }
 
-/* ── FEEDBACK FORM ──────────────────────────────── */
-.fb-group { margin-bottom: 18px; }
-.fb-label { display: block; font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--sans); }
-.fb-select, .fb-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-family: var(--sans);
-  font-size: 14px;
-  color: var(--text);
-  background: var(--surface);
-  resize: vertical;
-}
-.fb-select:focus, .fb-textarea:focus { outline: none; border-color: var(--p1); }
-.stars { display: flex; gap: 6px; }
-.star { font-size: 28px; color: var(--border); cursor: pointer; transition: color 0.1s; line-height: 1; }
-.star.lit { color: var(--p3); }
-.fb-note { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 12px; }
 
 /* ── EXPORT CODE ────────────────────────────────── */
 .export-code {
@@ -944,52 +926,7 @@ body {
 </div>
 
 <!-- FEEDBACK BUTTON (fixed) -->
-<button class="feedback-fab" onclick="openFeedback()" title="Share your feedback">💬 Feedback</button>
-
-<!-- FEEDBACK MODAL -->
-<div class="overlay" id="feedbackOverlay" onclick="closeFeedbackIfBg(event)">
-  <div class="modal" id="feedbackModal">
-    <div class="mhead">
-      <button class="mclose" onclick="closeFeedback()">✕</button>
-      <div class="m-daynum">OPTIONAL · ANONYMOUS</div>
-      <h2 class="m-title">How is this course working for you?</h2>
-    </div>
-    <div class="mbody" id="feedbackBody">
-      <div class="fb-group">
-        <label class="fb-label">How would you rate this course so far?</label>
-        <div class="stars" id="starRow">
-          <span class="star" onclick="setStar(1)">★</span>
-          <span class="star" onclick="setStar(2)">★</span>
-          <span class="star" onclick="setStar(3)">★</span>
-          <span class="star" onclick="setStar(4)">★</span>
-          <span class="star" onclick="setStar(5)">★</span>
-        </div>
-      </div>
-      <div class="fb-group">
-        <label class="fb-label">Your year of study</label>
-        <select class="fb-select" id="fbYear">
-          <option value="">Select…</option>
-          <option>About to join engineering</option>
-          <option>Year 1</option>
-          <option>Year 2</option>
-          <option>Year 3</option>
-          <option>Year 4</option>
-          <option>Recently graduated</option>
-        </select>
-      </div>
-      <div class="fb-group">
-        <label class="fb-label">What helped you most?</label>
-        <textarea class="fb-textarea" id="fbBest" placeholder="A specific day, an idea, a quote…" rows="3"></textarea>
-      </div>
-      <div class="fb-group">
-        <label class="fb-label">What can be better?</label>
-        <textarea class="fb-textarea" id="fbImprove" placeholder="Be direct — it helps improve the course" rows="3"></textarea>
-      </div>
-      <button class="done-btn" onclick="submitFeedback()">Submit Feedback</button>
-      <p class="fb-note">Your feedback is saved locally and helps improve this course for future students.</p>
-    </div>
-  </div>
-</div>
+<a class="feedback-fab" href="https://forms.gle/8hnuEhvHQbvdKqbG6" target="_blank" rel="noopener">💬 Feedback</a>
 
 <!-- EXPORT/IMPORT MODAL -->
 <div class="overlay" id="exportOverlay" onclick="closeExportIfBg(event)">
@@ -1811,54 +1748,6 @@ function updateP2Note(phase) {
   if (note) note.style.display = phase === 2 ? 'block' : 'none';
 }
 
-// ═══════════════════════════════════════════════
-//  FEEDBACK
-// ═══════════════════════════════════════════════
-let selectedStar = 0;
-
-function setStar(n) {
-  selectedStar = n;
-  document.querySelectorAll('.star').forEach((s, i) => {
-    s.classList.toggle('lit', i < n);
-  });
-}
-
-function openFeedback() {
-  document.getElementById('feedbackOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeFeedback() {
-  document.getElementById('feedbackOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeFeedbackIfBg(e) {
-  if (e.target === document.getElementById('feedbackOverlay')) closeFeedback();
-}
-
-function submitFeedback() {
-  const fb = {
-    rating: selectedStar,
-    year: document.getElementById('fbYear').value,
-    best: document.getElementById('fbBest').value,
-    improve: document.getElementById('fbImprove').value,
-    date: new Date().toISOString().split('T')[0],
-    progress: countDone()
-  };
-  const data = load();
-  if (!data.feedback) data.feedback = [];
-  data.feedback.push(fb);
-  save(data);
-
-  document.getElementById('feedbackBody').innerHTML = `
-    <div style="text-align:center;padding:40px 20px;">
-      <div style="font-size:48px;margin-bottom:16px;">🙏</div>
-      <h3 style="font-size:18px;margin-bottom:10px;">Thank you!</h3>
-      <p style="font-family:var(--serif);color:var(--text-light);font-size:15px;line-height:1.7;">Your feedback helps make this course better for every student who comes after you.</p>
-      <button class="done-btn" style="margin-top:24px;width:auto;padding:12px 32px;" onclick="closeFeedback()">Close</button>
-    </div>`;
-}
 
 // ═══════════════════════════════════════════════
 //  EXPORT / IMPORT
