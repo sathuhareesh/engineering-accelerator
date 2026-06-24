@@ -265,6 +265,147 @@ body {
 .track-content { display: none; }
 .track-content.active { display: block; }
 
+/* ── PLAYBOOK ─────────────────────────────────── */
+.playbook {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 28px 60px;
+}
+.pb-header {
+  margin-bottom: 40px;
+  padding-top: 32px;
+}
+.pb-header-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.pb-header-title {
+  font-family: var(--mono);
+  font-size: clamp(22px, 3.5vw, 34px);
+  font-weight: bold;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.pb-header-sub {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--text-light);
+  line-height: 1.6;
+  max-width: 640px;
+}
+.pb-progress-line {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-light);
+}
+.pb-progress-line span {
+  color: var(--done);
+  font-weight: bold;
+}
+.pb-section {
+  margin-bottom: 48px;
+}
+.pb-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+.pb-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.pb-section-title {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text);
+}
+.pb-section-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-light);
+  margin-left: auto;
+}
+.pb-moves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.pb-move {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+.pb-move.done {
+  border-color: var(--done);
+  background: var(--done-light);
+  opacity: 0.7;
+}
+.pb-move-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.pb-check {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--done);
+}
+.pb-move-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.pb-move.done .pb-move-title {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+.pb-move-why {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+.pb-move-step {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--p2-dark);
+  background: var(--p2-light);
+  padding: 6px 10px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+.pb-section.foundation .pb-section-title { color: var(--p1); }
+.pb-section.foundation .pb-section-header { border-bottom-color: var(--p1-light); }
+.pb-section.y12-specific .pb-section-title { color: var(--p2-dark); }
+.pb-section.y12-specific .pb-section-header { border-bottom-color: var(--p2-light); }
+.pb-section.y34-specific .pb-section-title { color: var(--p3-dark); }
+.pb-section.y34-specific .pb-section-header { border-bottom-color: var(--p3-light); }
+@media (max-width: 620px) {
+  .pb-moves { grid-template-columns: 1fr; }
+}
+
 /* ── NOTES CTA ──────────────────────────────────── */
 .notes-cta {
   display: flex;
@@ -1604,6 +1745,191 @@ task:`Three things to do today: (1) Share this link with one classmate who would
 ];
 
 // ═══════════════════════════════════════════════
+//  PLAYBOOK DATA
+// ═══════════════════════════════════════════════
+const PLAYBOOK_FOUNDATION = [
+  { id:'f1', title:'Read beyond your textbooks',
+    why:'Every semester, read at least one book outside your syllabus. The best engineers read widely — thinking well is a transferable skill that never ages.',
+    step:'Pick one book from the Resources section of this site and start it this week.' },
+  { id:'f2', title:'Build the consistency habit',
+    why:'30 minutes every day beats a 5-hour marathon once a week. Compound growth is real — 1% better daily means 37x better over a year. The habit matters more than any single session.',
+    step:'Block 30 mins in your schedule tomorrow. Guard that slot like a class you cannot skip.' },
+  { id:'f3', title:'Keep a notebook',
+    why:'Writing forces clarity. You will have insights, frustrations, and ideas during college that you will forget by next semester. Capture them — handwritten or digital.',
+    step:'Buy one notebook. Write today\'s date and one sentence about what you want from your engineering years.' },
+  { id:'f4', title:'Explore what genuinely pulls you',
+    why:'Most students drift into a career because they never paused to ask what they actually enjoy. Curiosity is a signal, not noise. Follow it without judging whether it is "useful."',
+    step:'List 3 things you enjoy doing — inside or outside engineering. No filter.' },
+  { id:'f5', title:'Break free from the placement trap',
+    why:'Placement is a milestone, not a destination. Students who optimize only for a job often plateau at 25. Your 4 years are a platform — use them to build something lasting.',
+    step:'Write one sentence: "At 30, I want to be the kind of person who..." and keep it somewhere visible.' },
+  { id:'f6', title:'Learn AI tools — they are your co-workers now',
+    why:'ChatGPT, Claude, Cursor, Gemini — not optional anymore. The engineer who uses AI well will do the work of five. The one who ignores it will be replaced by one who doesn\'t.',
+    step:'Spend 30 mins solving any real problem you have right now using an AI tool. Not a tutorial — a real problem.' },
+  { id:'f7', title:'Communicate clearly — written and spoken',
+    why:'The best idea explained poorly loses to a mediocre idea explained well. In college, grades measure what you know. In the real world, communication determines how far you go.',
+    step:'Write one short paragraph about something you learned this week. Read it back — does it make sense to a stranger?' },
+  { id:'f8', title:'Find one person ahead of you to learn from',
+    why:'A good mentor compresses years of trial-and-error into months. This does not have to be formal — a senior, an alumnus, or someone whose work you follow online all count.',
+    step:'Identify one person you genuinely respect who is 2+ years ahead of you. Send them one honest message this week.' },
+  { id:'f9', title:'Understand money basics before you earn any',
+    why:'No one teaches this in college: compound interest, savings, salary negotiation, the difference between an asset and a liability. Learn it before you need it.',
+    step:'Search "personal finance for beginners India" and watch one 10-minute video today.' },
+  { id:'f10', title:'Build something — however small',
+    why:'Building beats studying theory every time. Even a small project teaches more than 10 tutorials. The act of finishing something is its own skill.',
+    step:'Pick one micro-project idea (it can be embarrassingly small) and spend 30 mins starting it today.' },
+  { id:'f11', title:'Protect your mental health',
+    why:'Engineering college is genuinely hard. The comparison, the pressure, the loneliness — these are real. Asking for help is not weakness. It is the most practical thing a smart person can do.',
+    step:'Talk to one friend about something non-academic this week. Just check in.' },
+  { id:'f12', title:'Know the difference between busy and productive',
+    why:'College rewards busyness. The real world rewards results. Learn early to ask: "What did I actually produce this week?" — not "How many hours did I spend working?"',
+    step:'At the end of this week, list 3 things you actually finished — not just worked on.' }
+];
+
+const PLAYBOOK_Y12 = [
+  { id:'y12_1', title:'Experiment freely — you do not have to be good yet',
+    why:'Year 1 and 2 are for trying. Join clubs, attend random talks, code things that break, apply for things you might not get. The point is exposure, not achievement.',
+    step:'Sign up for one event or club this week that you would not normally consider.' },
+  { id:'y12_2', title:'Find your direction within engineering',
+    why:'CSE, ECE, Mechanical — they are all just doors. What matters is what specific problems excite you. AI? Hardware? Finance? Product? You do not need to decide now, but you need to explore.',
+    step:'Name 2 domains within or adjacent to engineering that you are genuinely curious about.' },
+  { id:'y12_3', title:'Find a senior who can guide you',
+    why:'One good mentor is worth more than 10 career books. Find someone 1-2 years ahead who has done something you respect — a good internship, a project, a startup attempt.',
+    step:'Ask a senior in your college for a 20-minute chat. Most are happy to talk if you ask honestly.' },
+  { id:'y12_4', title:'Join at least one technical community',
+    why:'A coding club, a robotics team, a hackathon group — not because it looks good on a resume, but because the people you build with in Year 1-2 become your network in Year 4.',
+    step:'Find one active technical club in your college and attend one of their sessions.' },
+  { id:'y12_5', title:'Start thinking about internships early',
+    why:'By end of Year 2, you should know what kind of internship you want — product, research, startup, corporate — so you have time to build toward it. Starting late costs more.',
+    step:'Look up 3 internship profiles on LinkedIn of seniors from your college. What kind of work did they do?' },
+  { id:'y12_6', title:'Decide on higher studies direction by Year 2 end',
+    why:'Masters, MBA, or straight to work? The preparation paths are very different. You do not need to decide now — but you need to start asking the question.',
+    step:'Talk to one person who chose each path (Masters, job, MBA) and ask: "Would you make the same choice again?"' },
+  { id:'y12_7', title:'Build one complete project — however small',
+    why:'Pick one thing and finish it. A website, a script, an analysis. The habit of finishing is more valuable than the project itself. Most students start many things and finish nothing.',
+    step:'Write down one project idea you have had but have not started. Spend 30 mins on it today.' },
+  { id:'y12_8', title:'Know your GPA strategy — do not drift',
+    why:'Grades matter for certain paths: Masters abroad, some PSUs, specific companies. They matter less for others. Know which path you are leaning toward, then decide how much to invest.',
+    step:'Find the GPA cutoffs for 3 opportunities you would actually want to pursue — then decide if your current grades get you there.' }
+];
+
+const PLAYBOOK_Y34 = [
+  { id:'y34_1', title:'Have a plan for the Semester 3-1 break',
+    why:'The break between Semester 5 and 6 is your last real unstructured time before placements begin. Use it intentionally — internship, project, research, or a skill sprint.',
+    step:'Write down what you want to have done by the end of the next semester break. One concrete output.' },
+  { id:'y34_2', title:'Aim for real work experience after Semester 3-2',
+    why:'A good internship or freelance project in Year 3 changes how you talk about yourself in every interview. Work experience is not just a resume line — it rewires how you think.',
+    step:'Identify 5 companies or researchers you would genuinely want to work with. Draft one cold email today.' },
+  { id:'y34_3', title:'Build your portfolio — GitHub, writing, side projects',
+    why:'In the 1-man company era, your portfolio is your resume. GitHub commits, Medium posts, a side hustle, a webinar you gave — these are evidence of who you are, not just what you studied.',
+    step:'Open your GitHub today. If it is empty or outdated, push one project — even if small.' },
+  { id:'y34_4', title:'Write publicly — even just once',
+    why:'Writing one post about something you learned forces you to understand it at a level exams never demand. It also shows future employers how you think — before you ever meet them.',
+    step:'Write 200 words about one thing you learned this semester and post it on LinkedIn or Medium.' },
+  { id:'y34_5', title:'Year 3 is the time to become battle-ready',
+    why:'Year 4 is mostly reactive — interviews, projects, thesis. Year 3 is when you get to be proactive. The work you do now is what you will talk about in every room you enter next year.',
+    step:'List 3 things you want to be able to say with confidence by the end of Year 3. Work backwards from there.' },
+  { id:'y34_6', title:'Prepare for the real world — not just interviews',
+    why:'Interview prep gets you a job. Real-world prep keeps it and grows it. AI tools, clear communication, knowing how to learn fast, facing ambiguity — these are what the first 6 months demand.',
+    step:'Spend one hour this week on something that makes you better at real work — not at answering interview questions.' },
+  { id:'y34_7', title:'Do not panic if friends get placed and you do not',
+    why:'Placement season is the most psychologically brutal part of engineering. When the person next to you gets an offer and you do not, it feels personal. It is not. You are on your own timeline — and getting stronger.',
+    step:'Write down one thing you are building or learning that has nothing to do with placement. That is your anchor.' },
+  { id:'y34_8', title:'The 1-man company era is here — do not just chase a job',
+    why:'With AI tools, a single person can build, ship, and earn at a scale that once needed a team. The job rat race is one path — but it is not the only one. Build the skill to create your own options.',
+    step:'Spend 30 mins researching one person your age who built something independently. What did they start with?' }
+];
+
+function pbLoad(trackId) {
+  try { return JSON.parse(localStorage.getItem('eng45_pb_' + trackId)) || {}; } catch { return {}; }
+}
+
+function pbSave(trackId, data) {
+  localStorage.setItem('eng45_pb_' + trackId, JSON.stringify(data));
+}
+
+function pbIsDone(trackId, moveId) {
+  return !!pbLoad(trackId)[moveId];
+}
+
+function pbToggle(trackId, moveId, checkbox) {
+  const data = pbLoad(trackId);
+  if (checkbox.checked) {
+    data[moveId] = new Date().toISOString().split('T')[0];
+  } else {
+    delete data[moveId];
+  }
+  pbSave(trackId, data);
+  const card = document.getElementById('pbm-' + trackId + '-' + moveId);
+  if (card) card.classList.toggle('done', checkbox.checked);
+  renderPbProgress(trackId);
+}
+
+function renderPbProgress(trackId) {
+  const moves = trackId === 'y12'
+    ? PLAYBOOK_FOUNDATION.concat(PLAYBOOK_Y12)
+    : PLAYBOOK_FOUNDATION.concat(PLAYBOOK_Y34);
+  const done = moves.filter(m => pbIsDone(trackId, m.id)).length;
+  const el = document.getElementById('pb-prog-' + trackId);
+  if (el) el.innerHTML = '<span>' + done + ' / ' + moves.length + '</span> moves completed';
+}
+
+function renderMoveCard(trackId, move) {
+  const done = pbIsDone(trackId, move.id);
+  const cbId = 'pbc-' + trackId + '-' + move.id;
+  return `<div class="pb-move${done ? ' done' : ''}" id="pbm-${trackId}-${move.id}">
+    <div class="pb-move-header">
+      <input type="checkbox" class="pb-check" id="${cbId}" ${done ? 'checked' : ''}
+        onchange="pbToggle('${trackId}','${move.id}',this)">
+      <label for="${cbId}" class="pb-move-title">${move.title}</label>
+    </div>
+    <div class="pb-move-why">${move.why}</div>
+    <div class="pb-move-step">→ ${move.step}</div>
+  </div>`;
+}
+
+function renderPlaybook(trackId) {
+  const isY12 = trackId === 'y12';
+  const heading = isY12 ? 'Year 1 – 2 Playbook' : 'Year 3 – 4 Playbook';
+  const sub = isY12
+    ? 'You are in the phase of exploration and foundation-setting. Use these years to experiment, find your signal, and build habits that will carry you through the rest of your degree.'
+    : 'You are in the phase of action and consolidation. The work you do now is what you will talk about in every room you enter next year. Build evidence. Stay grounded.';
+  const sectionClass = isY12 ? 'y12-specific' : 'y34-specific';
+  const sectionTitle = isY12 ? 'Finding Your Signal' : 'Battle Ready';
+  const specificMoves = isY12 ? PLAYBOOK_Y12 : PLAYBOOK_Y34;
+  const allMoves = PLAYBOOK_FOUNDATION.concat(specificMoves);
+  const done = allMoves.filter(m => pbIsDone(trackId, m.id)).length;
+
+  const foundationCards = PLAYBOOK_FOUNDATION.map(m => renderMoveCard(trackId, m)).join('');
+  const specificCards = specificMoves.map(m => renderMoveCard(trackId, m)).join('');
+
+  return `<div class="playbook">
+    <div class="pb-header">
+      <div class="pb-header-eyebrow">Engineering Accelerator</div>
+      <div class="pb-header-title">${heading}</div>
+      <div class="pb-header-sub">${sub}</div>
+      <div class="pb-progress-line" id="pb-prog-${trackId}"><span>${done} / ${allMoves.length}</span> moves completed</div>
+    </div>
+    <div class="pb-section foundation">
+      <div class="pb-section-header">
+        <span class="pb-section-label">Section 1</span>
+        <span class="pb-section-title">Foundation — Every Engineer Needs This</span>
+        <span class="pb-section-count">${PLAYBOOK_FOUNDATION.length} moves</span>
+      </div>
+      <div class="pb-moves">${foundationCards}</div>
+    </div>
+    <div class="pb-section ${sectionClass}">
+      <div class="pb-section-header">
+        <span class="pb-section-label">Section 2</span>
+        <span class="pb-section-title">${sectionTitle}</span>
+        <span class="pb-section-count">${specificMoves.length} moves</span>
+      </div>
+      <div class="pb-moves">${specificCards}</div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
 //  STORAGE
 // ═══════════════════════════════════════════════
 const KEY = 'eng45_v1';
@@ -1877,4 +2203,6 @@ function importProgress() {
 renderProgress();
 renderDays();
 updateP2Note(1);
+document.getElementById('track-y12').innerHTML = renderPlaybook('y12');
+document.getElementById('track-y34').innerHTML = renderPlaybook('y34');
 </script>
