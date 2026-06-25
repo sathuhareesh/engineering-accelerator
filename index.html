@@ -1006,7 +1006,7 @@ body {
 
 <!-- TOPBAR -->
 <div class="topbar" id="topbar">
-  <span class="topbar-brand">45-Day Engineering Accelerator</span>
+  <span class="topbar-brand">Engineering Accelerator</span>
   <div class="track"><div class="track-fill" id="trackFill"></div></div>
   <div class="topbar-stats">
     <div class="stat"><span class="stat-n" id="statDone">0</span><span class="stat-l">Done</span></div>
@@ -1017,9 +1017,9 @@ body {
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">India · CS &amp; Non-CS Freshers · 2026 Batch</div>
-  <h1>4 years.<br>45 days to <em>start right.</em></h1>
-  <p class="hero-sub">Not a course about grades or placements. A personal guide to becoming someone who thinks clearly, builds things, and knows where they're going.</p>
+  <div class="hero-eyebrow">The guide nobody gives you at the college gate</div>
+  <h1>Engineering is a platform.<br>Not a <em>tunnel.</em></h1>
+  <p class="hero-sub">Not a guide about grades or placements. A personal roadmap to becoming someone who thinks clearly, builds things, and knows where they're going — wherever you are in your engineering journey.</p>
   <div class="hero-belief">"Every day you should become a better version of yourself than yesterday."</div>
 
   <div class="mentor-card">
@@ -2159,6 +2159,7 @@ function pbToggle(trackId, moveId, checkbox) {
   const card = document.getElementById('pbm-' + trackId + '-' + moveId);
   if (card) card.classList.toggle('done', checkbox.checked);
   renderPbProgress(trackId);
+  updateTopbar();
 }
 
 function renderPbProgress(trackId) {
@@ -2316,19 +2317,41 @@ const PHASE_META = {
   3: { title: 'Design Your Future', sub: 'Direction, purpose, and your 4-year plan', cls: 'p3', active: 'active-p3' }
 };
 
+let activeTrack = 'fresher';
+
 function switchTrack(track, btn) {
   document.querySelectorAll('.track-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.track-tab').forEach(el => el.classList.remove('active'));
   document.getElementById('track-' + track).classList.add('active');
   btn.classList.add('active');
+  activeTrack = track;
+  updateTopbar();
+}
+
+function updateTopbar() {
+  const streakEl = document.getElementById('statStreak').parentElement;
+  if (activeTrack === 'fresher') {
+    const done = countDone();
+    const pct = Math.round((done / 45) * 100);
+    document.getElementById('trackFill').style.width = pct + '%';
+    document.getElementById('statDone').textContent = done + '/45';
+    document.getElementById('statStreak').textContent = calcStreak();
+    streakEl.style.display = '';
+  } else {
+    const moves = activeTrack === 'y12'
+      ? PLAYBOOK_FOUNDATION.concat(PLAYBOOK_Y12)
+      : PLAYBOOK_FOUNDATION.concat(PLAYBOOK_Y34);
+    const done = moves.filter(m => pbIsDone(activeTrack, m.id)).length;
+    const total = moves.length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('trackFill').style.width = pct + '%';
+    document.getElementById('statDone').textContent = done + '/' + total;
+    streakEl.style.display = 'none';
+  }
 }
 
 function renderProgress() {
-  const done = countDone();
-  const pct = Math.round((done / 45) * 100);
-  document.getElementById('trackFill').style.width = pct + '%';
-  document.getElementById('statDone').textContent = done + '/45';
-  document.getElementById('statStreak').textContent = calcStreak();
+  updateTopbar();
 }
 
 function showPhase(n) {
