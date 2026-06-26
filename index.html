@@ -262,42 +262,111 @@ body {
 .track-tab.tab-y12.active { background: var(--p2-light); border-color: var(--p2); color: var(--p2-dark); }
 .track-tab.tab-y34.active { background: var(--p3-light); border-color: var(--p3); color: var(--p3-dark); }
 
-.track-selector-label {
+/* ── WELCOME MODAL ──────────────────────────────── */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
-.track-info-btn {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--border);
+.welcome-overlay.open { opacity: 1; pointer-events: all; }
+.welcome-box {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+.welcome-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+.welcome-title {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.welcome-sub {
+  font-family: var(--serif);
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+.welcome-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 18px;
+}
+.welcome-pick-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+.welcome-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.welcome-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--ground);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.welcome-option:hover { background: var(--surface); }
+.welcome-option.opt-fresher:hover { border-color: var(--p1); }
+.welcome-option.opt-y12:hover { border-color: var(--p2); }
+.welcome-option.opt-y34:hover { border-color: var(--p3); }
+.welcome-option-icon { font-size: 20px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+.welcome-option-body { flex: 1; }
+.welcome-option-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.welcome-option-desc {
+  font-family: var(--serif);
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.45;
+}
+.welcome-cta {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--p1);
+  color: #fff;
   border: none;
   cursor: pointer;
-  font-size: 11px;
-  color: var(--text-light);
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  transition: background 0.15s;
 }
-.track-info-btn:hover { background: var(--p1-light); color: var(--p1); }
-.track-info-note {
-  display: none;
-  margin-top: 10px;
-  padding: 10px 14px;
-  background: var(--p1-light);
-  border-left: 3px solid var(--p1);
-  border-radius: 0 6px 6px 0;
-  font-size: 13px;
-  color: var(--text);
-  font-family: var(--serif);
-  line-height: 1.55;
-}
-.track-info-note.open { display: block; }
+.welcome-cta:hover { background: var(--p1-dark); }
 
 .track-content { display: none; }
 .track-content.active { display: block; }
@@ -1070,13 +1139,7 @@ body {
 
 <!-- TRACK SELECTOR -->
 <div class="track-selector">
-  <div class="track-selector-label">
-    Choose your track →
-    <button class="track-info-btn" onclick="toggleTrackInfo()" aria-label="How to choose your track">i</button>
-  </div>
-  <div class="track-info-note" id="trackInfoNote">
-    <strong>Pick the track that matches where you are right now.</strong> Each track is fully independent — you do not need to start with the Fresher course. If you are already in Year 1, 2, 3, or 4, go directly to that playbook.
-  </div>
+  <div class="track-selector-label">Choose your track →</div>
   <div class="track-tabs">
     <button class="track-tab active" onclick="switchTrack('fresher', this)">Fresher — 45-Day Course</button>
     <button class="track-tab tab-y12" onclick="switchTrack('y12', this)">Year 1 – 2 Playbook</button>
@@ -1248,6 +1311,42 @@ body {
       </div>
     </div>
     <div class="mbody" id="mbody"></div>
+  </div>
+</div>
+
+<!-- WELCOME MODAL -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-box">
+    <div class="welcome-eyebrow">Engineering Accelerator</div>
+    <div class="welcome-title">The guide nobody gives you at the college gate.</div>
+    <p class="welcome-sub">Built for Indian engineering students — wherever you are in your journey.</p>
+    <hr class="welcome-divider">
+    <div class="welcome-pick-label">Which track is right for you?</div>
+    <div class="welcome-options">
+      <div class="welcome-option opt-fresher" onclick="selectTrack('fresher')">
+        <div class="welcome-option-icon">🎓</div>
+        <div class="welcome-option-body">
+          <div class="welcome-option-title">Fresher — 45-Day Course</div>
+          <div class="welcome-option-desc">Haven't joined yet, or joined less than 45 days ago</div>
+        </div>
+      </div>
+      <div class="welcome-option opt-y12" onclick="selectTrack('y12')">
+        <div class="welcome-option-icon">📘</div>
+        <div class="welcome-option-body">
+          <div class="welcome-option-title">Year 1–2 Playbook</div>
+          <div class="welcome-option-desc">Completed at least 1 semester, currently in Year 1 or 2</div>
+        </div>
+      </div>
+      <div class="welcome-option opt-y34" onclick="selectTrack('y34')">
+        <div class="welcome-option-icon">📗</div>
+        <div class="welcome-option-body">
+          <div class="welcome-option-title">Year 3–4 Playbook</div>
+          <div class="welcome-option-desc">Currently in Year 3 or 4</div>
+        </div>
+      </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="document.getElementById('welcomeOverlay').classList.remove('open');openExport();" style="background:none;border:none;font-family:var(--mono);font-size:11px;color:var(--text-light);cursor:pointer;text-decoration:underline;letter-spacing:0.04em;">Have a progress code? Restore session →</button>
+    </div>
   </div>
 </div>
 
@@ -2359,8 +2458,38 @@ const PHASE_META = {
   3: { title: 'Design Your Future', sub: 'Direction, purpose, and your 4-year plan', cls: 'p3', active: 'active-p3' }
 };
 
-function toggleTrackInfo() {
-  document.getElementById('trackInfoNote').classList.toggle('open');
+function selectTrack(trackId) {
+  document.querySelectorAll('.track-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.track-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('track-' + trackId).classList.add('active');
+  const tabIndex = { fresher: 0, y12: 1, y34: 2 }[trackId];
+  document.querySelectorAll('.track-tab')[tabIndex].classList.add('active');
+  activeTrack = trackId;
+  updateTopbar();
+  document.getElementById('welcomeOverlay').classList.remove('open');
+  localStorage.setItem('eng45_welcomed', '1');
+  localStorage.setItem('eng45_track', trackId);
+  document.querySelector('.track-selector-label').textContent = 'Switch track →';
+}
+
+function maybeShowWelcome() {
+  const savedTrack = localStorage.getItem('eng45_track');
+  if (savedTrack) {
+    selectTrackSilent(savedTrack);
+    document.querySelector('.track-selector-label').textContent = 'Switch track →';
+  } else {
+    setTimeout(() => document.getElementById('welcomeOverlay').classList.add('open'), 400);
+  }
+}
+
+function selectTrackSilent(trackId) {
+  document.querySelectorAll('.track-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.track-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('track-' + trackId).classList.add('active');
+  const tabIndex = { fresher: 0, y12: 1, y34: 2 }[trackId];
+  document.querySelectorAll('.track-tab')[tabIndex].classList.add('active');
+  activeTrack = trackId;
+  updateTopbar();
 }
 
 let activeTrack = 'fresher';
@@ -2372,6 +2501,7 @@ function switchTrack(track, btn) {
   btn.classList.add('active');
   activeTrack = track;
   updateTopbar();
+  localStorage.setItem('eng45_track', track);
 }
 
 function updateTopbar() {
@@ -2595,4 +2725,5 @@ renderDays();
 updateP2Note(1);
 document.getElementById('track-y12').innerHTML = renderPlaybook('y12');
 document.getElementById('track-y34').innerHTML = renderPlaybook('y34');
+maybeShowWelcome();
 </script>
