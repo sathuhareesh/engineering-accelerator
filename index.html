@@ -262,6 +262,43 @@ body {
 .track-tab.tab-y12.active { background: var(--p2-light); border-color: var(--p2); color: var(--p2-dark); }
 .track-tab.tab-y34.active { background: var(--p3-light); border-color: var(--p3); color: var(--p3-dark); }
 
+.track-selector-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.track-info-btn {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-light);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.track-info-btn:hover { background: var(--p1-light); color: var(--p1); }
+.track-info-note {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: var(--p1-light);
+  border-left: 3px solid var(--p1);
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  color: var(--text);
+  font-family: var(--serif);
+  line-height: 1.55;
+}
+.track-info-note.open { display: block; }
+
 .track-content { display: none; }
 .track-content.active { display: block; }
 
@@ -1033,7 +1070,13 @@ body {
 
 <!-- TRACK SELECTOR -->
 <div class="track-selector">
-  <div class="track-selector-label">Choose your track →</div>
+  <div class="track-selector-label">
+    Choose your track →
+    <button class="track-info-btn" onclick="toggleTrackInfo()" aria-label="How to choose your track">i</button>
+  </div>
+  <div class="track-info-note" id="trackInfoNote">
+    <strong>Pick the track that matches where you are right now.</strong> Each track is fully independent — you do not need to start with the Fresher course. If you are already in Year 1, 2, 3, or 4, go directly to that playbook.
+  </div>
   <div class="track-tabs">
     <button class="track-tab active" onclick="switchTrack('fresher', this)">Fresher — 45-Day Course</button>
     <button class="track-tab tab-y12" onclick="switchTrack('y12', this)">Year 1 – 2 Playbook</button>
@@ -2315,6 +2358,10 @@ const PHASE_META = {
   2: { title: 'Tools of the Modern World', sub: 'AI, Python, and digital literacy', cls: 'p2', active: 'active-p2' },
   3: { title: 'Design Your Future', sub: 'Direction, purpose, and your 4-year plan', cls: 'p3', active: 'active-p3' }
 };
+
+function toggleTrackInfo() {
+  document.getElementById('trackInfoNote').classList.toggle('open');
+}
 
 let activeTrack = 'fresher';
 
